@@ -141,7 +141,7 @@ namespace ScientiaMobile.WurflCloud.Http
 
             // Attempt to get information from the cache
             DeviceInfo device;
-            if (!uaMayBeDifferent || (_cache is CookieWurflCloudCache))
+            if (!uaMayBeDifferent)
                 device = _cache.GetDevice(externalContext);
             else
             {
@@ -559,7 +559,7 @@ namespace ScientiaMobile.WurflCloud.Http
             }
             catch
             {
-                throw new HttpException(500, "Unable to parse JSON response from server.");
+                throw new Exception("500 Unable to parse JSON response from server.");
             }
 
             // Fill up the CloudResponse object

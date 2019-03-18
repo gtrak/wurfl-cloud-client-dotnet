@@ -18,7 +18,6 @@ namespace ScientiaMobile.WurflCloud.Cache
     public enum CacheType
     {
         None, 
-        Memory,
-        Cookie
+        Memory
     }
 }

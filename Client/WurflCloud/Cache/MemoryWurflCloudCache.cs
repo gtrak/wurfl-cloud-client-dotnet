@@ -22,13 +22,15 @@ namespace ScientiaMobile.WurflCloud.Cache
     /// </summary>
     public class MemoryWurflCloudCache : WurflCloudCacheBase
     {
-        private readonly System.Web.Caching.Cache _cache;
+        private static readonly System.Runtime.Caching.MemoryCache _cache;
+        static MemoryWurflCloudCache(){
+            _cache = System.Runtime.Caching.MemoryCache.Default;
+        }
         private readonly Int32 _durationInSeconds;   // default is 20 mins
 
         public MemoryWurflCloudCache(Int32 durationInSeconds = 1200)
         {
             _durationInSeconds = durationInSeconds;
-            _cache = HttpContext.Current.Cache;  
         }
 
         #region Overrides
@@ -144,10 +146,12 @@ namespace ScientiaMobile.WurflCloud.Cache
         private void WriteToCache(String userAgent, DeviceInfo device)
         {
             var uaHash = HashUserAgentString(userAgent);
-            _cache.Insert(uaHash, device, 
-                null, 
-                System.Web.Caching.Cache.NoAbsoluteExpiration, 
-                TimeSpan.FromSeconds(_durationInSeconds));
+            var _cachePolicy = new System.Runtime.Caching.CacheItemPolicy() {
+                AbsoluteExpiration = 
+                    new DateTimeOffset(
+                        DateTime.UtcNow.AddSeconds(_durationInSeconds))
+            };
+            _cache.Add(uaHash, device, _cachePolicy);
         }
         #endregion
     }
